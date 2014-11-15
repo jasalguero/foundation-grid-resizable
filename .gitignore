@@ -8,6 +8,8 @@
 # dependencies
 /node_modules
 /vendor/*
+/bower_components
+.tmp/
 
 # misc
 /.sass-cache

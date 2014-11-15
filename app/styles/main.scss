@@ -1,0 +1,79 @@
+// bower:scss
+// endbower
+
+body {
+  background: #fafafa;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #333;
+}
+
+.browsehappy {
+  margin: 0.2em 0;
+  background: #ccc;
+  color: #000;
+  padding: 0.2em 0;
+}
+
+.row {
+  max-width: 80rem;
+}
+
+.row.display {
+  font-size: 11px;
+  margin-bottom: 10px;
+  border: solid 1px #c6c6c6;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 20px;
+}
+
+.row.display .columns {
+  border: 2px dashed rgba(194, 21, 113, 0.34);
+  line-height: 3rem;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.row {
+  max-width: 80rem;
+}
+
+
+#container .row{
+  border: 2px solid rgb(0, 72, 142);
+  padding: 10px;
+  background-color: rgba(191, 211, 236, 0.31);
+
+  :hover {
+    > .resize-handler {
+      visibility: visible;
+    }
+  }
+}
+
+
+.helper {
+  width: 1px;
+  border: 1px dotted #1f497d;
+  height: 100%;
+  display: block;
+  position: absolute;
+}
+
+
+#container .row .resize-handler {
+  position: absolute;
+  top: 35%;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: medium;
+  visibility: hidden;
+
+  &.left-icon-resize {
+    left: 0;
+  }
+  &.right-icon-resize {
+    right: 0;
+  }
+
+}
