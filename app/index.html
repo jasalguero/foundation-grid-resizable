@@ -26,18 +26,29 @@
   your browser</a> to improve your experience.</p>
 <![endif]-->
 
-<div class="row content">
+<h1 class="title">Foundation Grid Resize and Reorder</h1>
+<div class="row content" id="containment-area">
   <div class="small-10 small-offset-1 columns end" id="container">
-    <div class="row display">
+    <div class="row display ">
       <div class="small-12 resizable columns end">
-        <div class="row display">
-          <div class="small-12 resizable columns end">12</div>
+        <div class="row display ">
+          <div class="small-12 resizable columns end">Nested Item 1</div>
+        </div>
+        <div class="row display ">
+          <div class="small-12 resizable columns end">Nested Item 2</div>
+        </div>
+        <div class="row display ">
+          <div class="small-12 resizable columns end">Nested Item 3</div>
+        </div>
+        <div class="row display ">
+          <div class="small-12 resizable columns end">Nested Item 4</div>
         </div>
       </div>
     </div>
+
     <div class="row display">
-      <div class="small-6 resizable columns end">6</div>
-      <div class="small-6 resizable columns end">6</div>
+      <div class="large-6 resizable columns end">Large 6</div>
+      <div class="large-6 resizable columns end">Large 6</div>
     </div>
     <div class="row display">
       <div class="small-4 columns end">4</div>
@@ -71,6 +82,8 @@
 <!-- endbuild -->
 
 <!-- build:js({app,.tmp}) scripts/main.js -->
+<script src="scripts/resizable.js"></script>
+<script src="scripts/draggable.js"></script>
 <script src="scripts/main.js"></script>
 <!-- endbuild -->
 </body>
