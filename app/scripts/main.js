@@ -6,12 +6,13 @@ $(function() {
     setupResizable(element);
   });
 
-  var droppables = $('#container .row, #container .columns:has(.row)');
+  //var droppables = $('#container .row, #container .columns:not(:has(.row))');
+  var droppables = $('#container .row');
   droppables.each(function(index, elem) {
     setupDroppable($(elem));
   });
 
-  var draggables = $('#container .columns');
+  var draggables = $('#container .columns, .draggable');
   draggables.each(function(index, elem) {
     setupDraggable($(elem));
   });

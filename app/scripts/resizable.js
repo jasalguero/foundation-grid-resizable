@@ -69,12 +69,15 @@ var resizeElement = function(element, newSize) {
 
   if (newSize === 0) {
     element.remove();
+    console.log('Element new size 0, removed');
   } else {
     var extracted = extractSizeAndType(element);
 
     element.removeClass(extracted.type + '-' + extracted.size);
     // add the class for the new size
     element.addClass(extracted.type + '-' + newSize);
+
+    console.log('Element new size: ' + extracted.type + '-' + newSize);
   }
 };
 
@@ -174,7 +177,6 @@ var enableResizable = function(element) {
   });
 
   element.find('.columns').each(function(index, elem) {
-    window.console.log('resetting children column resize');
     enableResizable($(elem));
   });
 };

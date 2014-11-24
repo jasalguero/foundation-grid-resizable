@@ -9,15 +9,14 @@
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
   <!-- build:css(.) styles/vendor.css -->
   <!-- bower:css -->
-  <link rel="stylesheet" href="bower_components/foundation/css/foundation.css" />
+  <link rel="stylesheet" href="bower_components/foundation/css/foundation.css"/>
   <!-- endbower -->
   <!-- endbuild -->
   <!-- build:css(.tmp) styles/main.css -->
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild -->
 
-  <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
-  <link rel="stylesheet" href="bower_components/jquery-ui/themes/start/jquery-ui.css" />
+
 </head>
 <body>
 
@@ -27,28 +26,46 @@
 <![endif]-->
 
 <h1 class="title">Foundation Grid Resize and Reorder</h1>
+
 <div class="row content" id="containment-area">
-  <div class="small-10 small-offset-1 columns end" id="container">
+  <div class="small-2 columns" id="side-bar">
+    <div class="row">
+      <div class="small-12 columns">
+        <h4 class="">COMPONENTS</h4>
+      </div>
+    </div>
+    <div class="row display">
+      <div class="small-12 columns draggable" style="background-color: rgba(116, 0, 3, 0.59)">
+        Component A
+      </div>
+    </div>
+    <div class="row display">
+      <div class="small-12 columns draggable" style="background-color: rgba(0, 75, 116, 0.68)">
+        Component B
+      </div>
+    </div>
+  </div>
+  <div class="small-10 columns end" id="container">
     <div class="row display ">
-      <div class="small-12 resizable columns end">
+      <div class="small-12  columns end">
         <div class="row display ">
-          <div class="small-12 resizable columns end">Nested Item 1</div>
+          <div class="small-12  columns end">Nested Item 1</div>
         </div>
         <div class="row display ">
-          <div class="small-12 resizable columns end">Nested Item 2</div>
+          <div class="small-12  columns end">Nested Item 2</div>
         </div>
         <div class="row display ">
-          <div class="small-12 resizable columns end">Nested Item 3</div>
+          <div class="small-12  columns end">Nested Item 3</div>
         </div>
         <div class="row display ">
-          <div class="small-12 resizable columns end">Nested Item 4</div>
+          <div class="small-12  columns end">Nested Item 4</div>
         </div>
       </div>
     </div>
 
     <div class="row display">
-      <div class="large-6 resizable columns end">Large 6</div>
-      <div class="large-6 resizable columns end">Large 6</div>
+      <div class="large-6  columns end">Large 6</div>
+      <div class="large-6  columns end">Large 6</div>
     </div>
     <div class="row display">
       <div class="small-4 columns end">4</div>
