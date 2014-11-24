@@ -1,3 +1,27 @@
+var extractSizeAndType = function(element) {
+  'use strict';
+
+  var result = {
+    size: 1,
+    type: 'small'
+  };
+
+  var classList = element.attr('class').split(/\s+/);
+  $.each(classList, function(index, clazz) {
+    if (clazz.indexOf('small-') > -1 && clazz.lastIndexOf('-') === 5) {
+      result.size = parseInt(clazz.split('-')[1], 10);
+    } else if (clazz.indexOf('medium-') > -1 && clazz.lastIndexOf('-') === 5) {
+      result.size = parseInt(clazz.split('-')[1], 10);
+      result.type = 'medium';
+    } else if (clazz.indexOf('large-') > -1 && clazz.lastIndexOf('-') === 5) {
+      result.size = parseInt(clazz.split('-')[1], 10);
+      result.type = 'large';
+    }
+  });
+
+  return result;
+};
+
 var calculateNewSize = function(newPosition, elemLeftPosition, elemSize, side) {
   'use strict';
 
@@ -34,20 +58,23 @@ var createSibling = function(element, size, position, sizeType) {
     } else {
       row.append(sibling);
     }
-    initResizable(sibling);
+
+    setupDraggable(sibling);
+    setupResizable(sibling);
   }
 };
 
-var resizeElement = function(element, newSize, oldSize, sizeType) {
+var resizeElement = function(element, newSize) {
   'use strict';
 
   if (newSize === 0) {
     element.remove();
   } else {
+    var extracted = extractSizeAndType(element);
 
-    element.removeClass(sizeType + '-' + oldSize);
+    element.removeClass(extracted.type + '-' + extracted.size);
     // add the class for the new size
-    element.addClass(sizeType + '-' + newSize);
+    element.addClass(extracted.type + '-' + newSize);
   }
 };
 
@@ -69,12 +96,13 @@ var getSizeTypeFromElem = function(elem, elemSize) {
 var handleResizeDrop = function(elem, ui, gridSize, side) {
   'use strict';
 
-  //console.log('numColumns ----> ' + (parseInt(element.width() / gridSize, 10) + 1));
-  //console.log('initial position ----> ' + parseInt(element.position().left / gridSize, 10));
-  //console.log('cursor position ---->' + (parseInt(ui.offset.left / gridSize, 10) - 1));
+  console.log('numColumns ----> ' + (parseInt($(elem).width() / gridSize, 10) + 1));
+  console.log('initial position ----> ' + parseInt($(elem).position().left / gridSize, 10));
+  console.log('cursor position ---->' + (parseInt(ui.offset.left / gridSize, 10) - 1));
 
   // get position and size of the element in the row
-  var newPosition = (parseInt(ui.offset.left / gridSize, 10) - 1);
+  var parentOffset = elem.parent('.row').offset();
+  var newPosition = (parseInt((ui.offset.left - parentOffset.left) / gridSize, 10));
   var elemSize = (parseInt(elem.width() / gridSize, 10) + 1);
   var elemLeftPosition = (parseInt(elem.position().left / gridSize, 10));
 
@@ -92,10 +120,10 @@ var handleResizeDrop = function(elem, ui, gridSize, side) {
     createSibling(elem, siblingSize, side, sizeType);
   } else {
     console.log('resizing sibling with size ' + (12 - elemSize));
-    resizeElement(elem.siblings('.columns').first(), siblingSize, 12 - elemSize, sizeType);
+    resizeElement(elem.siblings('.columns').first(), siblingSize);
   }
 
-  resizeElement(elem, newSize, elemSize, sizeType);
+  resizeElement(elem, newSize);
 
   if (newSize !== 0) {
     // destroy and recreate the resize behaviour for the column
@@ -111,15 +139,11 @@ var enableResizable = function(element) {
   'use strict';
 
   var parentRow = element.parent('.row');
-  //var parentLimits = [parentRow.offset().left-10, parentRow.offset().top,
-  //  parentRow.offset().left + parentRow.width(), parentRow.offset().top + parentRow.height()];
 
   var gridSize = parentRow.width() / 12;
 
   var leftIcon = element.find('.left-icon-resize');
   var rightIcon = element.find('.right-icon-resize');
-
-
 
   leftIcon.draggable({
     revert: true,
@@ -148,10 +172,15 @@ var enableResizable = function(element) {
       handleResizeDrop(element, ui, gridSize, 'right');
     }
   });
+
+  element.find('.columns').each(function(index, elem) {
+    window.console.log('resetting children column resize');
+    enableResizable($(elem));
+  });
 };
 
 
-var initResizable = function(elem) {
+var setupResizable = function(elem) {
   'use strict';
 
   var element = $(elem);

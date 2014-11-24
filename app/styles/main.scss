@@ -2,10 +2,10 @@
 // endbower
 
 body {
-  background: #fafafa;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333;
-  background-color: #ffffff;background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSczMDAnIGhlaWdodD0nMzAwJyB2aWV3Qm94PScwIDAgMzAwIDMwMCc+Cgk8ZGVmcz4KCQk8cGF0dGVybiBpZD0nYmx1ZXN0cmlwZScgcGF0dGVyblVuaXRzPSd1c2VyU3BhY2VPblVzZScgeD0nMCcgeT0nMCcgd2lkdGg9JzIwJyBoZWlnaHQ9JzIwJyB2aWV3Qm94PScwIDAgNDAgNDAnID4KCQk8cmVjdCB3aWR0aD0nMTEwJScgaGVpZ2h0PScxMTAlJyBmaWxsPScjZmZmZmZmJy8+CgkJCTxwYXRoIGQ9J00xLDFoNDB2NDBoLTQwdi00MCcgZmlsbC1vcGFjaXR5PScwJyBzdHJva2Utd2lkdGg9JzEnIHN0cm9rZS1kYXNoYXJyYXk9JzAsMSwxJyBzdHJva2U9JyNjY2NjY2MnLz4KCQk8L3BhdHRlcm4+IAoJCTxmaWx0ZXIgaWQ9J2Z1enonIHg9JzAnIHk9JzAnPgoJCQk8ZmVUdXJidWxlbmNlIHR5cGU9J3R1cmJ1bGVuY2UnIHJlc3VsdD0ndCcgYmFzZUZyZXF1ZW5jeT0nLjIgLjMnIG51bU9jdGF2ZXM9JzUnIHN0aXRjaFRpbGVzPSdzdGl0Y2gnLz4KCQkJPGZlQ29sb3JNYXRyaXggdHlwZT0nc2F0dXJhdGUnIGluPSd0JyB2YWx1ZXM9JzAnLz4KCQk8L2ZpbHRlcj4KCTwvZGVmcz4KCTxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbGw9J3VybCgjYmx1ZXN0cmlwZSknLz4KPHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsdGVyPSd1cmwoI2Z1enopJyBvcGFjaXR5PScwLjEnLz4KPC9zdmc+Cg==');
+  background-color: #ffffff;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSczMDAnIGhlaWdodD0nMzAwJyB2aWV3Qm94PScwIDAgMzAwIDMwMCc+Cgk8ZGVmcz4KCQk8cGF0dGVybiBpZD0nYmx1ZXN0cmlwZScgcGF0dGVyblVuaXRzPSd1c2VyU3BhY2VPblVzZScgeD0nMCcgeT0nMCcgd2lkdGg9JzIwJyBoZWlnaHQ9JzIwJyB2aWV3Qm94PScwIDAgNDAgNDAnID4KCQk8cmVjdCB3aWR0aD0nMTEwJScgaGVpZ2h0PScxMTAlJyBmaWxsPScjZmZmZmZmJy8+CgkJCTxwYXRoIGQ9J00xLDFoNDB2NDBoLTQwdi00MCcgZmlsbC1vcGFjaXR5PScwJyBzdHJva2Utd2lkdGg9JzEnIHN0cm9rZS1kYXNoYXJyYXk9JzAsMSwxJyBzdHJva2U9JyNjY2NjY2MnLz4KCQk8L3BhdHRlcm4+IAoJCTxmaWx0ZXIgaWQ9J2Z1enonIHg9JzAnIHk9JzAnPgoJCQk8ZmVUdXJidWxlbmNlIHR5cGU9J3R1cmJ1bGVuY2UnIHJlc3VsdD0ndCcgYmFzZUZyZXF1ZW5jeT0nLjIgLjMnIG51bU9jdGF2ZXM9JzUnIHN0aXRjaFRpbGVzPSdzdGl0Y2gnLz4KCQkJPGZlQ29sb3JNYXRyaXggdHlwZT0nc2F0dXJhdGUnIGluPSd0JyB2YWx1ZXM9JzAnLz4KCQk8L2ZpbHRlcj4KCTwvZGVmcz4KCTxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbGw9J3VybCgjYmx1ZXN0cmlwZSknLz4KPHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsdGVyPSd1cmwoI2Z1enopJyBvcGFjaXR5PScwLjEnLz4KPC9zdmc+Cg==');
 }
 
 .title {
@@ -44,14 +44,17 @@ body {
 #container {
   padding-top: 30px;
   padding-bottom: 30px;
-}
 
-.row.display .columns {
-  border: 2px dashed rgba(194, 21, 113, 0.34);
-  line-height: 3rem;
-  padding-left: 20px;
-  padding-right: 20px;
-  min-height: 50px
+  .columns {
+    border: 2px dashed rgba(194, 21, 113, 0.34);
+    line-height: 3rem;
+    padding: 0 20px;
+    min-height: 50px;
+
+    &:hover {
+      border: 2px dashed rgba(194, 21, 113, 0.76);
+    }
+  }
 }
 
 .row {
@@ -65,16 +68,15 @@ body {
 
   font-size: 11px;
   margin-bottom: 10px;
-  border: solid 1px rgb(31, 73, 125);
+  border: 1px solid rgba(31, 73, 125, 0.52);
   margin-left: 0 !important;
   margin-right: 0 !important;
   padding: 20px;
 
-  :hover {
-    > .resize-handler {
-      visibility: visible;
-    }
+  &:hover {
+    border: 1px solid rgb(31, 73, 125);
   }
+
 }
 
 .helper {
@@ -85,56 +87,79 @@ body {
   position: absolute;
 }
 
+#container .row, #container .columns {
+  &.droppable-hover {
+    border: 2px dashed black !important;
+  }
+  .resize-handler {
+    position: absolute;
+    top: 35%;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: medium;
+    visibility: hidden;
 
-#container .row .resize-handler {
-  position: absolute;
-  top: 35%;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: medium;
-  visibility: hidden;
+    &.resize-handler-active {
+      color: red;
+      visibility: visible;
+      display: block;
+    }
 
-  &.resize-handler-active {
-    color: red;
+    &.left-icon-resize {
+      left: 0;
+    }
+
+    &.right-icon-resize {
+      right: 0;
+    }
+  }
+  &:hover > .resize-handler {
     visibility: visible;
-    display: block;
   }
 
-  &.left-icon-resize {
-    left: 0;
-  }
-  &.right-icon-resize {
-    right: 0;
-  }
-}
-
-.row {
-
-  .drag-icon {
+  .drag-handle {
     position: absolute;
     top: 0;
     right: 0;
     cursor: pointer;
     display: inline-block;
     padding: 2px 4px;
-    font-size: 11.844px;
     font-weight: bold;
     line-height: 14px;
-    color: #ffffff;
+    color: black;
     vertical-align: baseline;
     white-space: nowrap;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-    background-color: #999999;
+//    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     visibility: hidden;
+
+    &.drag-handle-draggable {
+      right: 50%;
+      top: -0.5rem;
+      padding: 2px 20px;
+      background-color: aliceblue;
+      border: 1px solid black;
+    }
   }
 
-  &:hover > .drag-icon {
+  &:hover > .drag-handle {
     visibility: visible;
   }
 }
 
 .drag-placeholder {
-  border: 2px solid black;
+  border: 2px dashed black;
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
+.component-drag-helper {
+  border: 2px solid black;
+  width: 50px;
+  height: 50px;
+  background-color: #c3d6f7;
+}
+
+.droppable-active {
+  background-color: rgba(255, 179, 11, 0.53) !important;
+}
+
