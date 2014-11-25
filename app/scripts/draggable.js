@@ -175,12 +175,8 @@ calculatePositionDropped = function(container, element, helper) {
     position = 'under';
   }
 
-  //console.log('Helper offset -->' + JSON.stringify(helper.offset()));
-  //console.log('Helper width -->' + JSON.stringify(helper.offset()));
-  //console.log('Container Left --> ' + containerLeft);
-  //console.log('Container Right --> ' + containerRight);
-  //console.log('Distance To Left --> ' + distanceToLeft);
-  //console.log('Distance To Right --> ' + distanceToRight);
+  console.log('Helper offset -->' + JSON.stringify(helper.offset()));
+  console.log('Helper width -->' + JSON.stringify(helper.offset()));
 
   return position;
 };
@@ -251,12 +247,6 @@ var setupDraggable = function(element) {
     cursor: 'pointer',
     snap: '.ui-droppable',
     snapMode: 'inner'
-    //stop: function(event, ui) {
-    //  setTimeout(function() {
-    //    $(ui.draggable).draggable('destroy');
-    //  }, 0);
-    //}
-    //containment: '#containment-area'
   });
 };
 
@@ -273,12 +263,15 @@ var setupDroppable = function(element) {
 
       if (element.hasClass('row') && ui.draggable.parent()[0] !== element[0]) {
 
-        if (ui.draggable.hasClass('draggable')) {
-          ui.draggable.removeClass('draggable');
-          setupResizable(ui.draggable);
-        }
+          var elem = ui.draggable;
 
-        handleElementDroppedInRow(element, ui.draggable, ui.helper);
+          if (ui.draggable.hasClass('draggable')) {
+            elem = ui.draggable.clone();
+            elem.removeClass('draggable');
+            setupResizable(elem);
+          }
+
+          handleElementDroppedInRow(element, elem, ui.helper);
       }
     }
   });
