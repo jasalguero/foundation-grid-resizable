@@ -9,7 +9,7 @@ var cleanRowsForEmpties = function(row) {
     parentContainer = $('#container');
   }
 
-  if (childrenRows('.row').length === 0) {
+  if (childrenRows.length === 0) {
     console.log('after reorder the old row is empty, cleaning');
     row.remove();
     recalculateRow(parentContainer);
@@ -185,8 +185,7 @@ calculatePositionDropped = function(container, element, helper) {
 var handleElementDroppedInRow = function(container, element, helper) {
   'use strict';
 
-  var previousContainer = element.parent('.row'),
-      position = calculatePositionDropped(container, element, helper);
+  var position = calculatePositionDropped(container, element, helper);
 
   console.log('Element dropped in a row, ' + position);
   if (position === 'right' || position === 'left') {
@@ -194,9 +193,6 @@ var handleElementDroppedInRow = function(container, element, helper) {
   } else {
     insertElementInRowAboveOrBelow(container, element, position);
   }
-
-  console.log('Cleaning previous container row');
-  recalculateRow(previousContainer);
 };
 
 
@@ -260,19 +256,39 @@ var setupDroppable = function(element) {
     greedy: true,
     drop: function(event, ui) {
 
-
       if (element.hasClass('row') && ui.draggable.parent()[0] !== element[0]) {
 
-          var elem = ui.draggable;
+        var elem = ui.draggable;
 
-          if (ui.draggable.hasClass('draggable')) {
-            elem = ui.draggable.clone();
-            elem.removeClass('draggable');
-            setupResizable(elem);
-          }
+        if (ui.draggable.hasClass('draggable')) {
+          elem = ui.draggable.clone();
+          elem.removeClass('draggable');
+          setupResizable(elem);
+        }
 
-          handleElementDroppedInRow(element, elem, ui.helper);
+        var previousContainer = elem.parent('.row');
+        handleElementDroppedInRow(element, elem, ui.helper);
+        console.log('Cleaning previous container row');
+        recalculateRow(previousContainer);
+
       }
+    }
+  });
+};
+
+var setupTrash = function(element) {
+  'use strict';
+
+  element.droppable({
+    activeClass: 'trash-active',
+    hoverClass: 'trash-hover',
+    accept: '#container .columns, .draggable',
+    greedy: true,
+    drop: function(event, ui) {
+      var previousContainer = ui.draggable.parent('.row');
+      ui.draggable.remove();
+      console.log('Cleaning previous container row');
+      recalculateRow(previousContainer);
     }
   });
 };

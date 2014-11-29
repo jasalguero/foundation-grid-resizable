@@ -12,6 +12,9 @@ $(function() {
     setupDroppable($(elem));
   });
 
+  var $trash = $('.trash');
+  setupTrash($trash);
+
   var draggables = $('#container .columns, .draggable');
   draggables.each(function(index, elem) {
     setupDraggable($(elem));

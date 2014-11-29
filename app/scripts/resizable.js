@@ -36,7 +36,7 @@ var calculateNewSize = function(newPosition, elemLeftPosition, elemSize, side) {
     rightPosition = newPosition;
     leftPosition = elemLeftPosition;
   }
-  newSize = Math.min(Math.max((rightPosition - leftPosition), 0), 12);
+  newSize = Math.min(Math.max((rightPosition - leftPosition), 1), 11);
 
   console.log('element final position ---> ' + rightPosition);
   console.log('element new size ---> ' + newSize);
