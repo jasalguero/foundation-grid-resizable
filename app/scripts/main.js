@@ -1,13 +1,20 @@
 $(function() {
   'use strict';
 
+  // CONFIGURATION
+  window.FF_CONFIG = {
+
+    // used to identify the icons from other elements when checking if a row/column is empty
+    ICON_CLASS: 'icon'
+  };
+
   // setup resizing
-  $('#container').find('.columns').each(function(index, element) {
+  $('#container .row').find('.columns').each(function(index, element) {
     setupResizable(element);
   });
 
   //var droppables = $('#container .row, #container .columns:not(:has(.row))');
-  var droppables = $('#container .row');
+  var droppables = $('#container .row, #container');
   droppables.each(function(index, elem) {
     setupDroppable($(elem));
   });
@@ -15,7 +22,7 @@ $(function() {
   var $trash = $('.trash');
   setupTrash($trash);
 
-  var draggables = $('#container .columns, .draggable');
+  var draggables = $('#container .row .columns, .draggable');
   draggables.each(function(index, elem) {
     setupDraggable($(elem));
   });

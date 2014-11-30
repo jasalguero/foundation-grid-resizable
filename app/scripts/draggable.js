@@ -1,52 +1,94 @@
-var cleanRowsForEmpties = function(row) {
+/**
+ * Get the closest row parent or
+ * the div with id container if there is none
+ * @param elem
+ * @returns {*}
+ */
+var getRowContainer = function(elem) {
   'use strict';
 
-  var parentContainer = row.parent('.row'),
-      childrenRows = row.children('.row');
-
-  if (parentContainer.length === 0) {
+  var rowContainer = null;
+  var parent = elem.parent();
+  if (parent.attr('id') === 'container') {
     console.log('on the parent container, which is special');
-    parentContainer = $('#container');
+    rowContainer = parent;
+  } else if (parent.hasClass('row')) {
+    rowContainer = parent;
+  } else {
+    rowContainer = parent.parent('.row');
   }
+
+  return rowContainer;
+};
+
+/**
+ * Cleans a column in the following cases:
+ * - has no rows -> removes it
+ * - has 1 row -> replaces its parent with his child row
+ * to avoid having 1 row containing 1 column containing 1 row
+ *
+ * Otherwise does nothing
+ * @param column
+ */
+var cleanColumn = function(column) {
+  'use strict';
+
+  var parentRow = getRowContainer(column),
+      childrenRows = column.children('.row');
 
   if (childrenRows.length === 0) {
     console.log('after reorder the old row is empty, cleaning');
-    row.remove();
-    recalculateRow(parentContainer);
+    column.remove();
+
+    if (parentRow.attr('id') !== 'container') {
+      recalculateRow(parentRow);
+    }
   } else if (childrenRows.length === 1) {
     console.log('after reorder the old row has only one, cleaning');
     var onlyChildRow = childrenRows.first();
-    row.replaceWith(onlyChildRow);
+    parentRow.replaceWith(onlyChildRow);
     setupDroppable(onlyChildRow);
-    setupSortable(parentContainer);
-  }
-
-  // go recursively through all the parents until the container
-  if (parentContainer.attr('id') !== 'container') {
-    cleanRowsForEmpties(parentContainer);
+    setupSortable(onlyChildRow);
   }
 };
+
 
 var recalculateRow = function(row) {
   'use strict';
 
-  var childColumns = row.children('.columns');
+  if (row.length !== 0) {
 
-  if (childColumns.length > 0) {
-    console.log('Row has ' + childColumns.length + ' columns');
-    var existingColumn = childColumns.first();
-    var nestedRows = existingColumn.children('.row');
+    var childColumns = row.children('.columns');
 
-    if (nestedRows.length !== 0) {
-      console.log('Child column has nested rows');
-      row.replaceWith(nestedRows.first());
+    if (childColumns.length > 0) {
+      console.log('Row has ' + childColumns.length + ' columns');
+      var existingColumn = childColumns.first();
+      var nestedRows = existingColumn.children('.row');
+
+      if (nestedRows.length === 1) {
+        console.log('Child column has nested rows');
+        row.replaceWith(nestedRows.first());
+      } else {
+        console.log('Child column does not have rows');
+        resizeElement(existingColumn, 12); // jshint ignore:line
+      }
     } else {
-      console.log('Child column does not have rows');
-      resizeElement(existingColumn, 12);
+
+      // check if is the last row of the container
+      var parentRow = getRowContainer(row);
+
+      //if (parentRow.attr('id') === 'container' && parentRow.children('.row').length === 1) {
+      //
+      //} else {
+      console.log('Row is empty, removing');
+
+      row.remove();
+      // go recursively through all the parents until the container
+      if (parentRow.attr('id') !== 'container') {
+        recalculateRow(parentRow);
+      }
+      //}
     }
-  } else {
-    console.log('Row is empty, removing');
-    row.remove();
   }
 };
 
@@ -154,29 +196,32 @@ var insertElementInRowSide = function(row, element, position) {
 
 };
 
-calculatePositionDropped = function(container, element, helper) {
+/**
+ * Calculate if the position of the helper matches any of the border of the container where the helper is hovering
+ * @param container
+ * @param helper
+ * @returns {*}
+ */
+var calculatePositionDropped = function(container, helper) {
   'use strict';
 
-  var position = 'right',
-      firstColumn = container.children('.columns').first(),
-      lastColumn = container.children('.columns').last(),
-      // need the padding bottom to calculate properly the offset respect to the last element
-      paddingBottom = parseInt((container.innerHeight() - container.height()) / 2, 10);
-
+  var position = null;
 
   // compare the helper offset with the child columns offset
-  if (helper.offset().left < firstColumn.offset().left) {
+  if (helper.offset().left === container.offset().left) {
     position = 'left';
-  } else if ((helper.offset().left + helper.width()) > (lastColumn.offset().left + lastColumn.width())) {
+  } else if ((helper.offset().left + helper.outerWidth()) === (container.offset().left + container.outerWidth())) {
     position = 'right';
-  } else if (helper.offset().top < firstColumn.offset().top) {
+  } else if (helper.offset().top === container.offset().top) {
     position = 'above';
-  } else if (helper.offset().top > (firstColumn.offset().top + firstColumn.height() - paddingBottom)) {
+  } else if (helper.offset().top + helper.outerHeight() === (container.offset().top + container.outerHeight())) {
     position = 'under';
   }
 
-  console.log('Helper offset -->' + JSON.stringify(helper.offset()));
-  console.log('Helper width -->' + JSON.stringify(helper.offset()));
+  //console.log('Helper offset -->' + JSON.stringify(helper.offset()) + ', ' + (helper.offset().left +
+  //  helper.outerWidth()) + ', ' + (helper.offset().top + helper.outerHeight()));
+  //console.log('Container offset -->' + JSON.stringify(container.offset())  + ', ' +
+  //(container.offset().left + container.outerWidth()) + ', ' + (container.offset().top + container.outerHeight()));
 
   return position;
 };
@@ -185,13 +230,37 @@ calculatePositionDropped = function(container, element, helper) {
 var handleElementDroppedInRow = function(container, element, helper) {
   'use strict';
 
-  var position = calculatePositionDropped(container, element, helper);
+  var position = calculatePositionDropped(container, helper);
 
-  console.log('Element dropped in a row, ' + position);
-  if (position === 'right' || position === 'left') {
-    insertElementInRowSide(container, element, position);
+  if (container.attr('id') === 'container') {
+    console.log('element dropped in container');
+    var $row = $('<div>', {class: 'row display'});
+    $row.append(element);
+    if (position === 'under'){
+      container.append($row);
+    } else {
+      container.prepend($row);
+    }
+    resizeElement(element, 12);
+    enableResizable(element);
+    setupDraggable(element);
+    setupDroppable($row);
+    setupSortable(container);
   } else {
-    insertElementInRowAboveOrBelow(container, element, position);
+
+
+
+    if (position === null) {
+      console.log('element not dropped near borders, defaulting to above');
+      position = 'above';
+    }
+
+    console.log('Element dropped in a row, ' + position);
+    if (position === 'right' || position === 'left') {
+      insertElementInRowSide(container, element, position);
+    } else {
+      insertElementInRowAboveOrBelow(container, element, position);
+    }
   }
 };
 
@@ -202,7 +271,7 @@ var setupSortable = function(element) {
   element.find('.row').each(function(index, elem) {
     if ($(elem).children('.drag-handle-sortable').length === 0) {
       var row = $(elem);
-      var dragIcon = $('<i>', {class: 'fa fa-arrows drag-handle drag-handle-sortable'});
+      var dragIcon = $('<i>', {class: 'fa fa-arrows icon drag-handle drag-handle-sortable'});
       row.prepend(dragIcon);
     }
   });
@@ -218,16 +287,17 @@ var setupSortable = function(element) {
     containment: '#containment-area',
     distance: 4,
     remove: function() {
-      cleanRowsForEmpties(element);
+      cleanColumn(element);
     }
   });
 };
+
 
 var setupDraggable = function(element) {
   'use strict';
 
   if (element.children('.drag-handle-draggable').length === 0) {
-    var dragIcon = $('<i>', {class: 'fa fa-bars drag-handle drag-handle-draggable'});
+    var dragIcon = $('<i>', {class: 'fa fa-bars icon drag-handle drag-handle-draggable'});
     element.prepend(dragIcon);
   }
 
@@ -241,8 +311,31 @@ var setupDraggable = function(element) {
     cancel: '> .row',
     cursorAt: {right: 0, top: 0},
     cursor: 'pointer',
-    snap: '.ui-droppable',
-    snapMode: 'inner'
+    snap: '.ui-droppable:not(.trash)',
+    snapMode: 'inner',
+    snapTolerance: 40,
+
+    drag: function(event, ui) {
+
+      var $container = $('.droppable-hover'),
+          position = null;
+
+      if ($container.length === 1) {
+        position = calculatePositionDropped($container, ui.helper);
+
+        console.log('position of the helper: ' + position);
+
+        // remove all hover position classes
+        $container.removeClass(function(index, clazz) {
+          //console.log('class: ' + clazz + ' match: ' + (clazz.match(/(^|\s)hover-position-\S+/g)));
+          return (clazz.match(/(^|\s)hover-position-\S+/g) || []).join(' ');
+        });
+
+        if (position !== null) {
+          $container.addClass('hover-position-' + position);
+        }
+      }
+    }
   });
 };
 
@@ -250,27 +343,40 @@ var setupDroppable = function(element) {
   'use strict';
 
   element.droppable({
-    //activeClass: 'droppable-active',
+    activeClass: 'droppable-active',
     hoverClass: 'droppable-hover',
     accept: '#container .columns, .draggable',
     greedy: true,
     drop: function(event, ui) {
 
-      if (element.hasClass('row') && ui.draggable.parent()[0] !== element[0]) {
+      if ((element.hasClass('row') || element.attr('id') === 'container') && ui.draggable.parent()[0] !== element[0]) {
 
-        var elem = ui.draggable;
+        var elem = ui.draggable,
+            isNewElem = false;
 
         if (ui.draggable.hasClass('draggable')) {
           elem = ui.draggable.clone();
           elem.removeClass('draggable');
           setupResizable(elem);
+          isNewElem = true;
         }
 
         var previousContainer = elem.parent('.row');
-        handleElementDroppedInRow(element, elem, ui.helper);
-        console.log('Cleaning previous container row');
-        recalculateRow(previousContainer);
 
+        var parentColumn = previousContainer.parent('.columns');
+
+
+        handleElementDroppedInRow(element, elem, ui.helper);
+
+        if (!isNewElem) {
+          console.log('Cleaning previous container row');
+          recalculateRow(previousContainer);
+
+          // check if the column has anything but the icon classes
+          if (parentColumn.length !== 0 && parentColumn.children(':not(.' + FF_CONFIG.ICON_CLASS + ')').length === 0) {
+            cleanColumn(parentColumn);
+          }
+        }
       }
     }
   });

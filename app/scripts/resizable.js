@@ -153,7 +153,7 @@ var enableResizable = function(element) {
     revertDuration: 100,
     grid: [gridSize],
     helper: function() {
-      return $('<i>', {class: 'fa fa-arrows-h left-icon-resize resize-handler resize-handler-active'});
+      return $('<i>', {class: 'fa fa-arrows-h icon left-icon-resize resize-handler resize-handler-active'});
     },
     axis: 'x',
     containment: parentRow,
@@ -167,7 +167,7 @@ var enableResizable = function(element) {
     revertDuration: 100,
     grid: [gridSize],
     helper: function() {
-      return $('<i>', {class: 'fa fa-arrows-h right-icon-resize resize-handler resize-handler-active'});
+      return $('<i>', {class: 'fa fa-arrows-h icon right-icon-resize resize-handler resize-handler-active'});
     },
     axis: 'x',
     containment: parentRow,
@@ -186,8 +186,8 @@ var setupResizable = function(elem) {
   'use strict';
 
   var element = $(elem);
-  var leftIcon = $('<i>', {class: 'fa fa-arrows-h left-icon-resize resize-handler'});
-  var rightIcon = $('<i>', {class: 'fa fa-arrows-h right-icon-resize resize-handler'});
+  var leftIcon = $('<i>', {class: 'fa fa-arrows-h icon left-icon-resize resize-handler'});
+  var rightIcon = $('<i>', {class: 'fa fa-arrows-h icon right-icon-resize resize-handler'});
 
   element.prepend(leftIcon);
   element.append(rightIcon);

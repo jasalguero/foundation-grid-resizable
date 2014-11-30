@@ -49,6 +49,9 @@ body {
 #container {
   padding-top: 30px;
   padding-bottom: 30px;
+  min-height: 100px;
+  background-color: rgba(255, 229, 182, 0.34);
+  border: 1px dashed rgb(255, 201, 102);
 
   .columns {
     border: 2px dashed rgba(194, 21, 113, 0.34);
@@ -81,7 +84,6 @@ body {
   &:hover {
     border: 1px solid rgb(31, 73, 125);
   }
-
 }
 
 .helper {
@@ -94,8 +96,24 @@ body {
 
 #container .row, #container .columns {
   &.droppable-hover {
-    border: 2px dashed black !important;
+    // ATTENTION!!!: Border width has to be the same as the row for the
+    // calculation of the position
+    border: 1px dashed black;
+
+    &.hover-position-left {
+      border-left: 1px solid red;
+    }
+    &.hover-position-right {
+      border-right: 1px solid red;
+    }
+    &.hover-position-above {
+      border-top: 1px solid red;
+    }
+    &.hover-position-under {
+      border-bottom: 1px solid red;
+    }
   }
+
   .resize-handler {
     position: absolute;
     top: 35%;
@@ -162,10 +180,6 @@ body {
   width: 30px;
   height: 30px;
   background-color: #c3d6f7;
-}
-
-.droppable-active {
-  background-color: rgba(255, 179, 11, 0.53) !important;
 }
 
 .trash {
