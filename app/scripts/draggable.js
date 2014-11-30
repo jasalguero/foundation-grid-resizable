@@ -1,3 +1,20 @@
+var isNewNestingAllowed = function(row) {
+  'use strict';
+
+  var currentDeepestNesting = row.parentsUntil('#container', '.row').length;
+
+  row.find('.row').each(function(index, childRow) {
+    var nestLevel = $(childRow).parentsUntil('#container', '.row').length;
+
+    currentDeepestNesting = Math.max(currentDeepestNesting, nestLevel);
+  });
+
+  var allowed = (window.FF_CONFIG.MAX_NESTING_ALLOWED > currentDeepestNesting);
+  if (!allowed) { console.log('Max nesting reached, new row not allowed');}
+
+  return allowed;
+};
+
 /**
  * Get the closest row parent or
  * the div with id container if there is none
@@ -72,6 +89,8 @@ var recalculateRow = function(row) {
         console.log('Child column does not have rows');
         resizeElement(existingColumn, 12); // jshint ignore:line
       }
+
+      setupDroppable(row);
     } else {
 
       // check if is the last row of the container
@@ -112,32 +131,34 @@ var insertElementInRowAboveOrBelow = function(row, element, position) {
   } else {
     console.log('wrapping the existing content of the row in a nested one and appending the new element');
 
-    var newContainerRow = $('<div>', {class: 'row display'});
-    var newColumn = $('<div>', {class: 'small-12 columns end'});
+    if (isNewNestingAllowed(row)) {
+      var newContainerRow = $('<div>', {class: 'row display'});
+      var newColumn = $('<div>', {class: 'small-12 columns end'});
 
-    rowForNewContent.append(element);
-    row.replaceWith(newContainerRow);
+      rowForNewContent.append(element);
+      row.replaceWith(newContainerRow);
 
-    if (position === 'above') {
-      newColumn.append(rowForNewContent);
-      newColumn.append(row);
-    } else {
-      newColumn.append(row);
-      newColumn.append(rowForNewContent);
+      if (position === 'above') {
+        newColumn.append(rowForNewContent);
+        newColumn.append(row);
+      } else {
+        newColumn.append(row);
+        newColumn.append(rowForNewContent);
+      }
+      newContainerRow.append(newColumn);
+      setupResizable(newColumn);
+      setupDraggable(newColumn);
+
+      setupDroppable(newContainerRow);
+      setupDroppable(rowForNewContent);
+      setupDroppable(row);
+      setupSortable(newContainerRow.parent());
+
+      row.find('.columns').each(function(index, elem) {
+        enableResizable($(elem));
+        setupDraggable($(elem));
+      });
     }
-    newContainerRow.append(newColumn);
-    setupResizable(newColumn);
-    setupDraggable(newColumn);
-
-    setupDroppable(newContainerRow);
-    setupDroppable(rowForNewContent);
-    setupDroppable(row);
-    setupSortable(newContainerRow.parent());
-
-    row.find('.columns').each(function(index, elem) {
-      enableResizable($(elem));
-      setupDraggable($(elem));
-    });
   }
 
   resizeElement(element, 12);
@@ -155,45 +176,46 @@ var insertElementInRowSide = function(row, element, position) {
   var childColumns = row.find('.columns'),
       sibling;
 
-  if (childColumns.length > 1) {
-    // group everything into a nested row
-    sibling = $('<div>', {class: 'small-6 columns end'});
+  if (isNewNestingAllowed(row) || childColumns.length === 1) {
+    if (childColumns.length > 1) {
+      // group everything into a nested row
+      sibling = $('<div>', {class: 'small-6 columns end'});
 
-    var newRow = $('<div>', {class: 'row display'});
-    row.replaceWith(newRow);
+      var newRow = $('<div>', {class: 'row display'});
+      row.replaceWith(newRow);
 
-    sibling.append(row);
-    newRow.append(sibling);
+      sibling.append(row);
+      newRow.append(sibling);
 
-    setupDroppable(newRow);
-    setupDroppable(row);
-    setupSortable(newRow.parent());
-    setupSortable(sibling);
-  } else {
-    sibling = childColumns.first();
+      setupDroppable(newRow);
+      setupDroppable(row);
+      setupSortable(newRow.parent());
+      setupSortable(sibling);
+    } else {
+      sibling = childColumns.first();
+    }
+
+    if (position === 'left') {
+      element.insertBefore(sibling);
+    } else {
+      element.insertAfter(sibling);
+    }
+
+    resizeElement(element, 6);
+    enableResizable(element);
+    setupDraggable(element);
+
+
+    resizeElement(sibling, 6);
+    setupResizable(sibling);
+    setupDraggable(sibling);
+
+    sibling.find('.columns').each(function(index, elem) {
+      enableResizable($(elem));
+      setupDraggable($(elem));
+      setupSortable($(elem));
+    });
   }
-
-  if (position === 'left') {
-    element.insertBefore(sibling);
-  } else {
-    element.insertAfter(sibling);
-  }
-
-  resizeElement(element, 6);
-  enableResizable(element);
-  setupDraggable(element);
-
-
-  resizeElement(sibling, 6);
-  setupResizable(sibling);
-  setupDraggable(sibling);
-
-  sibling.find('.columns').each(function(index, elem) {
-    enableResizable($(elem));
-    setupDraggable($(elem));
-    setupSortable($(elem));
-  });
-
 };
 
 /**
@@ -205,16 +227,17 @@ var insertElementInRowSide = function(row, element, position) {
 var calculatePositionDropped = function(container, helper) {
   'use strict';
 
-  var position = null;
+  var position = null,
+      error = window.FF_CONFIG.POSITION_CALCULATION_ERROR;
 
   // compare the helper offset with the child columns offset
-  if (helper.offset().left === container.offset().left) {
+  if (Math.abs(Math.abs(helper.offset().left) - Math.abs(container.offset().left)) < error) {
     position = 'left';
-  } else if ((helper.offset().left + helper.outerWidth()) === (container.offset().left + container.outerWidth())) {
+  } else if (Math.abs(Math.abs(helper.offset().left + helper.outerWidth()) - Math.abs((container.offset().left + container.outerWidth()))) < error) {
     position = 'right';
-  } else if (helper.offset().top === container.offset().top) {
+  } else if (Math.abs(Math.abs((helper.offset().top) - Math.abs(container.offset().top))) < error) {
     position = 'above';
-  } else if (helper.offset().top + helper.outerHeight() === (container.offset().top + container.outerHeight())) {
+  } else if (Math.abs(Math.abs(helper.offset().top + helper.outerHeight()) - Math.abs((container.offset().top + container.outerHeight()))) < error) {
     position = 'under';
   }
 
@@ -236,7 +259,7 @@ var handleElementDroppedInRow = function(container, element, helper) {
     console.log('element dropped in container');
     var $row = $('<div>', {class: 'row display'});
     $row.append(element);
-    if (position === 'under'){
+    if (position === 'under') {
       container.append($row);
     } else {
       container.prepend($row);
@@ -247,7 +270,6 @@ var handleElementDroppedInRow = function(container, element, helper) {
     setupDroppable($row);
     setupSortable(container);
   } else {
-
 
 
     if (position === null) {
@@ -284,7 +306,7 @@ var setupSortable = function(element) {
     placeholder: 'drag-placeholder',
     forcePlaceholderSize: true,
     opacity: 0.5,
-    containment: '#containment-area',
+    //containment: '#containment-area',
     distance: 4,
     remove: function() {
       cleanColumn(element);
@@ -314,6 +336,7 @@ var setupDraggable = function(element) {
     snap: '.ui-droppable:not(.trash)',
     snapMode: 'inner',
     snapTolerance: 40,
+    revert: 'invalid',
 
     drag: function(event, ui) {
 
@@ -327,7 +350,6 @@ var setupDraggable = function(element) {
 
         // remove all hover position classes
         $container.removeClass(function(index, clazz) {
-          //console.log('class: ' + clazz + ' match: ' + (clazz.match(/(^|\s)hover-position-\S+/g)));
           return (clazz.match(/(^|\s)hover-position-\S+/g) || []).join(' ');
         });
 

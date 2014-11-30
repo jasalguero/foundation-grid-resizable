@@ -5,7 +5,11 @@ $(function() {
   window.FF_CONFIG = {
 
     // used to identify the icons from other elements when checking if a row/column is empty
-    ICON_CLASS: 'icon'
+    ICON_CLASS: 'icon',
+
+    MAX_NESTING_ALLOWED: 1,
+
+    POSITION_CALCULATION_ERROR: 5
   };
 
   // setup resizing

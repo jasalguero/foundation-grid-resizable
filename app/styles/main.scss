@@ -51,13 +51,33 @@ body {
   padding-bottom: 30px;
   min-height: 100px;
   background-color: rgba(255, 229, 182, 0.34);
-  border: 1px dashed rgb(255, 201, 102);
+  border: 2px dashed rgb(255, 201, 102);
+
+  &.droppable-hover {
+    // ATTENTION!!!: Border width has to be the same as the row for the
+    // calculation of the position
+    border: 2px dashed #ff6600;
+
+    &.hover-position-left {
+      border-left: 2px solid #ff6600;
+    }
+    &.hover-position-right {
+      border-right: 2px solid #ff6600;
+    }
+    &.hover-position-above {
+      border-top: 2px solid #ff6600;
+    }
+    &.hover-position-under {
+      border-bottom: 2px solid #ff6600;
+    }
+  }
 
   .columns {
     border: 2px dashed rgba(194, 21, 113, 0.34);
     line-height: 3rem;
     padding: 15px;
     min-height: 50px;
+    background-color: #FDCBBF;
 
     &:hover {
       border: 2px dashed rgba(194, 21, 113, 0.76);
@@ -70,19 +90,19 @@ body {
 }
 
 #container .row {
-  background-color: rgba(191, 211, 236, 0.31);
+  background-color: rgb(189, 207, 255);
   box-sizing: border-box;
   position: relative;
 
   font-size: 11px;
   margin-bottom: 10px;
-  border: 1px solid rgba(31, 73, 125, 0.52);
+  border: 2px solid rgba(31, 73, 125, 0.52);
   margin-left: 0 !important;
   margin-right: 0 !important;
   padding: 20px;
 
   &:hover {
-    border: 1px solid rgb(31, 73, 125);
+    border: 2px solid rgb(31, 73, 125);
   }
 }
 
@@ -98,19 +118,19 @@ body {
   &.droppable-hover {
     // ATTENTION!!!: Border width has to be the same as the row for the
     // calculation of the position
-    border: 1px dashed black;
+    border: 2px dashed black;
 
     &.hover-position-left {
-      border-left: 1px solid red;
+      border-left: 2px solid red;
     }
     &.hover-position-right {
-      border-right: 1px solid red;
+      border-right: 2px solid red;
     }
     &.hover-position-above {
-      border-top: 1px solid red;
+      border-top: 2px solid red;
     }
     &.hover-position-under {
-      border-bottom: 1px solid red;
+      border-bottom: 2px solid red;
     }
   }
 
@@ -152,7 +172,6 @@ body {
     color: black;
     vertical-align: baseline;
     white-space: nowrap;
-//    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     visibility: hidden;
 
     &.drag-handle-draggable {
@@ -200,5 +219,9 @@ body {
     padding: 15px 45px;
     opacity: 0.3;
   }
+}
+
+.component .columns{
+  padding: 20px;
 }
 
