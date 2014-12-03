@@ -1,3 +1,8 @@
+/**
+ * Extract the current size and foundation class type of the element
+ * @param element
+ * @returns {{size: number, type: string}}
+ */
 var extractSizeAndType = function(element) {
   'use strict';
 
@@ -22,6 +27,15 @@ var extractSizeAndType = function(element) {
   return result;
 };
 
+/**
+ * Calculate the new size of the element based in its current left and right limits
+ * and which resizing icon was dragged
+ * @param newPosition
+ * @param elemLeftPosition
+ * @param elemSize
+ * @param side
+ * @returns {number}
+ */
 var calculateNewSize = function(newPosition, elemLeftPosition, elemSize, side) {
   'use strict';
 
@@ -44,6 +58,14 @@ var calculateNewSize = function(newPosition, elemLeftPosition, elemSize, side) {
   return newSize;
 };
 
+/**
+ * Insert another columns object in the row with complementing
+ * size of the current one
+ * @param element
+ * @param size
+ * @param position
+ * @param sizeType
+ */
 var createSibling = function(element, size, position, sizeType) {
   'use strict';
 
@@ -64,6 +86,11 @@ var createSibling = function(element, size, position, sizeType) {
   }
 };
 
+/**
+ * Sets the new size for the element maintaining its current foundation size class
+ * @param element
+ * @param newSize
+ */
 var resizeElement = function(element, newSize) {
   'use strict';
 
@@ -81,6 +108,12 @@ var resizeElement = function(element, newSize) {
   }
 };
 
+/**
+ * Extract the current size foundation class used by the element
+ * @param elem
+ * @param elemSize
+ * @returns {string}
+ */
 var getSizeTypeFromElem = function(elem, elemSize) {
   'use strict';
 
@@ -96,6 +129,14 @@ var getSizeTypeFromElem = function(elem, elemSize) {
   return sizeType;
 };
 
+/**
+ * Based on the icon's position determines the new size of the columns object
+ * and calls for the resizing of it and its sibling, if there is
+ * @param elem
+ * @param ui
+ * @param gridSize
+ * @param side
+ */
 var handleResizeDrop = function(elem, ui, gridSize, side) {
   'use strict';
 
@@ -138,11 +179,16 @@ var handleResizeDrop = function(elem, ui, gridSize, side) {
   }
 };
 
+/**
+ * Use the inserted icons as handles to manage the resizing
+ * @param element
+ */
 var enableResizable = function(element) {
   'use strict';
 
   var parentRow = element.parent('.row');
 
+  // make the grid that will defined the steps for the positions based in the container row
   var gridSize = parentRow.width() / 12;
 
   var leftIcon = element.find('.left-icon-resize');
@@ -182,6 +228,10 @@ var enableResizable = function(element) {
 };
 
 
+/**
+ * Insert the icons in the element and call the setup
+ * @param elem
+ */
 var setupResizable = function(elem) {
   'use strict';
 

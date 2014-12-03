@@ -1,8 +1,15 @@
+/**
+ * Check if the passed row is already in the maximum nesting allowed
+ * @param row
+ * @returns {boolean}
+ */
 var isNewNestingAllowed = function(row) {
   'use strict';
 
+  // nesting level of the current row
   var currentDeepestNesting = row.parentsUntil('#container', '.row').length;
 
+  // calculate the nesting of the leaves
   row.find('.row').each(function(index, childRow) {
     var nestLevel = $(childRow).parentsUntil('#container', '.row').length;
 
@@ -10,10 +17,13 @@ var isNewNestingAllowed = function(row) {
   });
 
   var allowed = (window.FF_CONFIG.MAX_NESTING_ALLOWED > currentDeepestNesting);
-  if (!allowed) { console.log('Max nesting reached, new row not allowed');}
+  if (!allowed) {
+    console.log('Max nesting reached, new row not allowed');
+  }
 
   return allowed;
 };
+
 
 /**
  * Get the closest row parent or
@@ -69,7 +79,10 @@ var cleanColumn = function(column) {
   }
 };
 
-
+/**
+ * Clean a row resizing or removing it depending on the children columns
+ * @param row
+ */
 var recalculateRow = function(row) {
   'use strict';
 
@@ -96,9 +109,6 @@ var recalculateRow = function(row) {
       // check if is the last row of the container
       var parentRow = getRowContainer(row);
 
-      //if (parentRow.attr('id') === 'container' && parentRow.children('.row').length === 1) {
-      //
-      //} else {
       console.log('Row is empty, removing');
 
       row.remove();
@@ -111,6 +121,12 @@ var recalculateRow = function(row) {
   }
 };
 
+/**
+ * Insert a new element in a row in position above or below
+ * @param row
+ * @param element
+ * @param position
+ */
 var insertElementInRowAboveOrBelow = function(row, element, position) {
   'use strict';
 
@@ -170,6 +186,12 @@ var insertElementInRowAboveOrBelow = function(row, element, position) {
 };
 
 
+/**
+ * Insert a new element in a row from the side
+ * @param row
+ * @param element
+ * @param position
+ */
 var insertElementInRowSide = function(row, element, position) {
   'use strict';
 
@@ -241,36 +263,44 @@ var calculatePositionDropped = function(container, helper) {
     position = 'under';
   }
 
-  //console.log('Helper offset -->' + JSON.stringify(helper.offset()) + ', ' + (helper.offset().left +
-  //  helper.outerWidth()) + ', ' + (helper.offset().top + helper.outerHeight()));
-  //console.log('Container offset -->' + JSON.stringify(container.offset())  + ', ' +
-  //(container.offset().left + container.outerWidth()) + ', ' + (container.offset().top + container.outerHeight()));
-
   return position;
 };
 
 
+function insertElementInContainer(container, element, position) {
+  console.log('element dropped in container');
+  var $row = $('<div>', {class: 'row display'});
+  $row.append(element);
+
+  // position can only be above or under
+  if (position === 'under') {
+    container.append($row);
+  } else {
+    container.prepend($row);
+  }
+
+  resizeElement(element, 12);
+  enableResizable(element);
+  setupDraggable(element);
+  setupDroppable($row);
+  setupSortable(container);
+}
+
+
+/**
+ * Callback function for handling the dropping of the element inside a row
+ * @param container
+ * @param element
+ * @param helper
+ */
 var handleElementDroppedInRow = function(container, element, helper) {
   'use strict';
 
   var position = calculatePositionDropped(container, helper);
 
   if (container.attr('id') === 'container') {
-    console.log('element dropped in container');
-    var $row = $('<div>', {class: 'row display'});
-    $row.append(element);
-    if (position === 'under') {
-      container.append($row);
-    } else {
-      container.prepend($row);
-    }
-    resizeElement(element, 12);
-    enableResizable(element);
-    setupDraggable(element);
-    setupDroppable($row);
-    setupSortable(container);
+    insertElementInContainer(element, position, container);
   } else {
-
 
     if (position === null) {
       console.log('element not dropped near borders, defaulting to above');
@@ -287,6 +317,10 @@ var handleElementDroppedInRow = function(container, element, helper) {
 };
 
 
+/**
+ * Setup the element to have its direct children .row element sortable
+ * @param element
+ */
 var setupSortable = function(element) {
   'use strict';
 
@@ -306,7 +340,6 @@ var setupSortable = function(element) {
     placeholder: 'drag-placeholder',
     forcePlaceholderSize: true,
     opacity: 0.5,
-    //containment: '#containment-area',
     distance: 4,
     remove: function() {
       cleanColumn(element);
@@ -315,6 +348,10 @@ var setupSortable = function(element) {
 };
 
 
+/**
+ * Setup the element to be draggable
+ * @param element
+ */
 var setupDraggable = function(element) {
   'use strict';
 
@@ -328,7 +365,6 @@ var setupDraggable = function(element) {
     helper: function() {
       return $('<div>', {class: 'component-drag-helper'});
     },
-    //helper: 'clone',
     opacity: 0.5,
     cancel: '> .row',
     cursorAt: {right: 0, top: 0},
@@ -361,6 +397,10 @@ var setupDraggable = function(element) {
   });
 };
 
+/**
+ * Setup the element to be droppable
+ * @param element
+ */
 var setupDroppable = function(element) {
   'use strict';
 
@@ -404,6 +444,10 @@ var setupDroppable = function(element) {
   });
 };
 
+/**
+ * Setup the trash to accept draggable element and delete them
+ * @param element
+ */
 var setupTrash = function(element) {
   'use strict';
 
