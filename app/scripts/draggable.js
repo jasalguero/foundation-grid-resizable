@@ -299,7 +299,7 @@ var handleElementDroppedInRow = function(container, element, helper) {
   var position = calculatePositionDropped(container, helper);
 
   if (container.attr('id') === 'container') {
-    insertElementInContainer(element, position, container);
+    insertElementInContainer(container, element, position);
   } else {
 
     if (position === null) {
